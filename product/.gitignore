@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/product/.mvn/wrapper/maven-wrapper.jar
-/product/mvnw
-/product/mvnw.cmd
-/product/.mvn/wrapper/maven-wrapper.jar

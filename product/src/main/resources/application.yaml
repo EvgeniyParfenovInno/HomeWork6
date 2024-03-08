@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    ru.demo.homework: debug
+
+spring:
+  application:
+    name: product
+  datasource:
+    hikari:
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: checkPwd
