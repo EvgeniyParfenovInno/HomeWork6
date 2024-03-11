@@ -9,6 +9,7 @@ import ru.stepup.spring.coins.core.integrations.ProductIntegration;
 import ru.stepup.spring.coins.core.integrations.dtos.ProductsDtoRs;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,6 +26,13 @@ public class ProductService {
                         .stream()
                         .map(p -> new ProductResponse(p.id(), p.account(), p.balance(), p.type()))
                         .toList());
+        log.info("Подготовлен ответ: {}", response);
+        return response;
+    }
+
+    public Optional<ProductResponse> getProductById(Long id) {
+        var response = productIntegration.getProductById(id)
+                .map(p -> new ProductResponse(p.id(), p.account(), p.balance(), p.type()));
         log.info("Подготовлен ответ: {}", response);
         return response;
     }
