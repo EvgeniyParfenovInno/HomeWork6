@@ -2,6 +2,8 @@ package ru.stepup.spring.coins.core.integrations;
 
 import ru.stepup.spring.coins.core.integrations.dtos.ProductsDtoRs;
 
+import java.util.Optional;
+
 public interface ProductIntegration {
-    ProductsDtoRs getProductsByUserId(String userId);
+    Optional<ProductsDtoRs> getProductsByUserId(String userId);
 }

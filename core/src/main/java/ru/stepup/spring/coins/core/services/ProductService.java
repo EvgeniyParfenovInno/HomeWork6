@@ -9,7 +9,6 @@ import ru.stepup.spring.coins.core.integrations.ProductIntegration;
 import ru.stepup.spring.coins.core.integrations.dtos.ProductsDtoRs;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,8 +20,7 @@ public class ProductService {
     public ProductsResponse getProductByUserId(String userId) {
         var productsRs = productIntegration.getProductsByUserId(userId);
         var response = new ProductsResponse(
-                Optional.ofNullable(productsRs)
-                        .map(ProductsDtoRs::items)
+                productsRs.map(ProductsDtoRs::items)
                         .orElse(List.of())
                         .stream()
                         .map(p -> new ProductResponse(p.id(), p.account(), p.balance(), p.type()))

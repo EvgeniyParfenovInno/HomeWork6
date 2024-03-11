@@ -1,9 +1,12 @@
 package ru.stepup.spring.coins.core.integrations;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 import ru.stepup.spring.coins.core.exceptions.IntegrationException;
 import ru.stepup.spring.coins.core.integrations.dtos.ProductsDtoRs;
+
+import java.util.Optional;
 
 @Slf4j
 public class ProductIntegrationImpl implements ProductIntegration {
@@ -15,14 +18,14 @@ public class ProductIntegrationImpl implements ProductIntegration {
     }
 
     @Override
-    public ProductsDtoRs getProductsByUserId(String userId) {
+    public Optional<ProductsDtoRs> getProductsByUserId(String userId) {
         try {
             var response = restTemplate.getForEntity("/api/v1/products?userId={userId}",
                     ProductsDtoRs.class, userId);
-            return response.getBody();
+            return Optional.of(response).map(HttpEntity::getBody);
         } catch (IntegrationException e) {
-            log.error("error body: {}", e.getIntegrationErrorDto());
-            return null;
+            log.error("При обращении к продуктовому сервису обнаружена ошибка: {}", e.getIntegrationErrorDto());
+            throw e;
         }
     }
 }
