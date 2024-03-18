@@ -18,7 +18,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ProductsResponse getProducts(@RequestHeader String userId) {
+    public ProductsResponse getProducts(@RequestHeader Long userId) {
         log.info("Запрос продуктов пользователя: {}", userId);
         return productService.getProductByUserId(userId);
     }

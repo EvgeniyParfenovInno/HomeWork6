@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductDao {
-    Optional<ProductEntity> getById(Long id) throws SQLException;
+    Optional<ProductEntity> getByIdAndUserId(Long id, Long userId) throws SQLException;
     List<ProductEntity> getByUserId(Long userId) throws SQLException;
 }

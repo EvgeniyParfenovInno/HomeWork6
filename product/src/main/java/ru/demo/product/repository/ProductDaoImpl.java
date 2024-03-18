@@ -23,16 +23,17 @@ public class ProductDaoImpl implements ProductDao {
     private static final String TYPE_FIELD = "type";
     private static final String USER_ID_FIELD = "userId";
 
-    private static final String GET_BY_ID_SQL_REQUEST = "select * from products where id=?";
+    private static final String GET_BY_ID_SQL_REQUEST = "select * from products where id=? and userId=?";
     private static final String GET_BY_USER_ID_SQL_REQUEST = "select * from products where userId=?";
 
     private final DataSource dataSource;
 
     @Override
-    public Optional<ProductEntity> getById(Long id) throws SQLException {
+    public Optional<ProductEntity> getByIdAndUserId(Long id, Long userId) throws SQLException {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_BY_ID_SQL_REQUEST)) {
             ps.setLong(1, id);
+            ps.setLong(2, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return Optional.of(mapToEntity(rs));

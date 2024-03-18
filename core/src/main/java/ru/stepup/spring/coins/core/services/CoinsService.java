@@ -21,17 +21,17 @@ public class CoinsService {
         this.productService = productService;
     }
 
-    public ExecuteCoinsResponse execute(ExecuteCoinsRequest request) {
+    public ExecuteCoinsResponse execute(ExecuteCoinsRequest request, Long userId) {
         if (coreProperties.getNumbersBlockingEnabled()) {
             if (coreProperties.getBlockedNumbers().contains(request.number())) {
                 throw new BadRequestException("Указан заблокированный номер кошелька", "BLOCKED_ACCOUNT_NUMBER");
             }
         }
 
-        var product = productService.getProductById(Long.parseLong(request.productId()));
+        var product = productService.getProductById(request.productId(), userId);
 
         if (product.isPresent()) {
-            if (product.map(ProductResponse::balance).orElse(BigDecimal.ZERO).compareTo(BigDecimal.ZERO) <= 0)
+            if (product.map(ProductResponse::balance).orElse(BigDecimal.ZERO).compareTo(request.amount()) <= 0)
                 throw new BadRequestException("Некорректный баланс", "INCORRECT_BALANCE");
         } else {
             throw new BadRequestException("Продукт не найден", "NOT_EXISTS_PRODUCT");

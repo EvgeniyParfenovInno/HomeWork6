@@ -21,12 +21,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
 
     @Override
-    public ProductDto getById(Long id) {
+    public ProductDto getById(Long id, Long userId) {
         if (id == null || id < 0)
             throw new IllegalArgumentException("Получен некорректный идентификатор продукта: " + id);
+        if (userId == null || userId < 0)
+            throw new IllegalArgumentException("Получен некорректный идентификатор пользователя: " + userId);
 
         try {
-            return productDao.getById(id)
+            return productDao.getByIdAndUserId(id, userId)
                     .map(this::mapToDto)
                     .orElseThrow(() -> new ItemNotExistsException("Не найден продукт с идентификатором " + id));
         } catch (SQLException e) {
