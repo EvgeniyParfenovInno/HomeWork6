@@ -19,7 +19,7 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
         if (response.getStatusCode().is4xxClientError()) {
             ObjectMapper objectMapper = new ObjectMapper();
             IntegrationErrorDto integrationErrorDto = objectMapper.readValue(response.getBody(), IntegrationErrorDto.class);
-            throw new IntegrationException("Произошла ошибка при интеграции с сервисом - исполнителем платежей", integrationErrorDto);
+            throw new IntegrationException("Произошла ошибка при интеграции с сервисом", integrationErrorDto);
         }
     }
 }

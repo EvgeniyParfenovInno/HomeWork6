@@ -17,4 +17,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleBadRequestException(BadRequestException e) {
         return new ResponseEntity<>(new ErrorDto(e.getCode(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IntegrationException.class)
+    public ResponseEntity<ErrorDto> handleIntegrationException(IntegrationException e) {
+        return new ResponseEntity<>(new ErrorDto(e.getIntegrationErrorDto().code(), e.getIntegrationErrorDto().message()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorDto> handleThrowable(Throwable t) {
+        var message = String.format("%s: %s", t.getClass().getSimpleName(), t.getMessage());
+        return new ResponseEntity<>(new ErrorDto("INTERNAL_SERVER_ERROR", message), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
