@@ -9,8 +9,20 @@ spring:
   application:
     name: product
   datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/javapro
+    username: postgres
+    password: checkPwd
     hikari:
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/postgres
-      username: postgres
-      password: checkPwd
+      schema: public
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
