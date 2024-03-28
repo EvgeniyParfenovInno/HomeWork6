@@ -1,17 +1,38 @@
 package ru.demo.limit.service.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.demo.limit.entity.LimitEntity;
+import ru.demo.limit.mapping.LimitMapper;
+import ru.demo.limit.model.Limit;
 import ru.demo.limit.repository.LimitRepository;
-import ru.demo.limit.repository.PaymentRepository;
+import ru.demo.limit.service.LimitService;
 
-@Slf4j
+import java.math.BigDecimal;
+
 @Service
-@AllArgsConstructor
-public class LimitServiceImpl {
+public class LimitServiceImpl implements LimitService {
+
+    @Value("${service.limit}")
+    private Integer defaultLimit;
 
     private final LimitRepository limitRepository;
-    private final PaymentRepository paymentRepository;
+    private final LimitMapper mapper = Mappers.getMapper(LimitMapper.class);
 
+    public LimitServiceImpl(LimitRepository limitRepository) {
+        this.limitRepository = limitRepository;
+    }
+
+    @Override
+    public Limit getLimitByUserId(Long userId) {
+        return mapper.mapToModel(limitRepository.findByUserId(userId)
+                .orElseGet(() -> createLimit(userId)));
+    }
+
+    private LimitEntity createLimit(Long userId) {
+        return limitRepository.save(new LimitEntity()
+                .setUserId(userId)
+                .setValue(new BigDecimal(defaultLimit)));
+    }
 }
