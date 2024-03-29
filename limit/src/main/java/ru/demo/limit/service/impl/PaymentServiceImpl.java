@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.demo.limit.entity.PaymentEntity;
-import ru.demo.limit.exception.EntityAlreadyExistsException;
-import ru.demo.limit.exception.EntityIllegalStateException;
 import ru.demo.limit.exception.EntityNotExistsException;
+import ru.demo.limit.exception.OperationException;
 import ru.demo.limit.mapping.PaymentMapper;
 import ru.demo.limit.model.Payment;
 import ru.demo.limit.model.payment.PaymentStatus;
@@ -40,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment createPayment(Payment payment) {
         if (repository.findByPaymentId(payment.getPaymentId()).isPresent())
-            throw new EntityAlreadyExistsException("101", "Уже существует платеж с идентификатором: " + payment.getPaymentId());
+            throw new OperationException("101", "Уже существует платеж с идентификатором: " + payment.getPaymentId());
 
         var entity = mapper.mapToEntityFromModel(payment);
         entity.setStatus(PaymentStatus.NEW);
@@ -63,7 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new EntityNotExistsException("102", "Не найден платеж с идентификатором: " + paymentId));
 
         if (entity.getStatus() != PaymentStatus.NEW)
-            throw new EntityIllegalStateException("103", "Не допустимо изменение статуса платежа с идентификатором: " + paymentId);
+            throw new OperationException("103", "Не допустимо изменение статуса платежа с идентификатором: " + paymentId);
 
         entity.setStatus(status);
         entity = repository.save(entity);

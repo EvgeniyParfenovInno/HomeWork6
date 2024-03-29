@@ -22,6 +22,7 @@ public class LimitController {
 
     @GetMapping
     public LimitResponse getLimit(@RequestHeader Long userId){
+        log.info("Получен запрос текущего лимита пользователя: {}", userId);
         return mapper.mapToDto(limitService.getLimitByUserId(userId));
     }
 }

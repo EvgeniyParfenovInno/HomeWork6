@@ -8,6 +8,8 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.demo.limit.api.PaymentCreatureRequest;
 import ru.demo.limit.api.PaymentResponse;
+import ru.demo.limit.exception.OperationException;
+import ru.demo.limit.exception.ValidationException;
 import ru.demo.limit.mapping.PaymentMapper;
 import ru.demo.limit.model.Payment;
 import ru.demo.limit.model.payment.PaymentStatus;
@@ -32,13 +34,9 @@ public class ProcessingServiceImpl implements ProcessingService {
     public PaymentResponse createPayment(Long userId, PaymentCreatureRequest request) {
         validateRequest(request);
 
-        if (getPaymentById(request.getPaymentId()).isPresent()) {
-            throw new IllegalArgumentException("Платеж с таким идентификатором уже существует!");
-        }
-
         var currentLimit = getCurrentLimit(userId);
         if (request.getAmount().compareTo(currentLimit) < 0)
-            throw new IllegalArgumentException("Превышение допустимого лимита");
+            throw new OperationException("121", "Превышение допустимого лимита");
 
         var payment = paymentService.createPayment(paymentMapper.mapToModelFromDto(request, userId));
         return paymentMapper.mapToDtoFromModel(payment, getCurrentLimit(userId));
@@ -46,27 +44,25 @@ public class ProcessingServiceImpl implements ProcessingService {
 
     @Override
     public PaymentResponse acceptPayment(Long userId, String paymentId) {
-        return null;
+        var payment = paymentService.acceptPayment(paymentId);
+        return paymentMapper.mapToDtoFromModel(payment, getCurrentLimit(userId));
     }
 
     @Override
     public PaymentResponse cancelPayment(Long userId, String paymentId) {
-        return null;
-    }
-
-    private Optional<Payment> getPaymentById(String paymentId) {
-        return paymentService.getPayment(paymentId);
+        var payment = paymentService.cancelPayment(paymentId);
+        return paymentMapper.mapToDtoFromModel(payment, getCurrentLimit(userId));
     }
 
     private void validateRequest(PaymentCreatureRequest request) {
         if (request == null)
-            throw new IllegalArgumentException("Не найдены атрибуты платежа");
+            throw new ValidationException("111", "Не найдены атрибуты платежа");
 
         if (Strings.isEmpty(request.getPaymentId()))
-            throw new IllegalArgumentException("Не задан идентификатор платежа");
+            throw new ValidationException("112", "Не задан идентификатор платежа");
 
         if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) > 0)
-            throw new IllegalArgumentException("Сумма плаежа не корректна");
+            throw new ValidationException("113", "Сумма платежа не корректна");
     }
 
     private BigDecimal getCurrentLimit(Long userId) {
