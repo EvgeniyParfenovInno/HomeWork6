@@ -5,8 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.demo.limit.entity.PaymentEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<PaymentEntity, Long> {
     List<PaymentEntity> findAllByUserId(Long userId);
+    Optional<PaymentEntity> findByPaymentId(String paymentId);
 }
