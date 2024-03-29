@@ -3,6 +3,8 @@ server:
 
 service:
   limit: 10000
+  clear-payments:
+    cron: 0 */10 * * * *
 
 spring:
   application:

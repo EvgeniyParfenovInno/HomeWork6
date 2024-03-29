@@ -57,6 +57,11 @@ public class PaymentServiceImpl implements PaymentService {
         return changePaymentStatus(paymentId, PaymentStatus.CANCELLED);
     }
 
+    @Override
+    public void clearPayments() {
+        repository.deleteAll();
+    }
+
     private Payment changePaymentStatus(String paymentId, PaymentStatus status) {
         var entity = repository.findByPaymentId(paymentId)
                 .orElseThrow(() -> new EntityNotExistsException("102", "Не найден платеж с идентификатором: " + paymentId));

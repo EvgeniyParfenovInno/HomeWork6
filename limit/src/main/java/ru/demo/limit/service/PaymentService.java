@@ -11,4 +11,5 @@ public interface PaymentService {
     Payment createPayment(Payment payment);
     Payment acceptPayment(String paymentId);
     Payment cancelPayment(String paymentId);
+    void clearPayments();
 }
