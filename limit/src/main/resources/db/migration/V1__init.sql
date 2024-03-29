@@ -1,3 +1,11 @@
-create table user_limit (id bigserial primary key, user_id bigint unique not null, limitation double);
+create table user_limit (
+    id bigserial primary key,
+    user_id bigint unique not null,
+    limitation double);
 
-insert into user_limit (user_id, limitation) values (1, 10000), (2, 10000);
+create table payment(
+    id bigserial primary key,
+    user_id bigint not null,
+    payment_id varchar(64) unique not null,
+    amount double not null,
+    status int not null);

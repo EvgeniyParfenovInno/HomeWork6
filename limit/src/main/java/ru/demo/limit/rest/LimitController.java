@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.demo.limit.api.LimitResponse;
+import ru.demo.limit.dto.LimitResponse;
 import ru.demo.limit.mapping.LimitMapper;
 import ru.demo.limit.service.LimitService;
 

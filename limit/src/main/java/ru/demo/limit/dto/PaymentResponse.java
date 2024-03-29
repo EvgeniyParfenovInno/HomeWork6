@@ -1,8 +1,7 @@
-package ru.demo.limit.api;
+package ru.demo.limit.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import ru.demo.limit.model.payment.PaymentStatus;
 
 import java.math.BigDecimal;
 
@@ -10,6 +9,6 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 public class PaymentResponse {
     private final String paymentId;
-    private final PaymentStatus paymentStatus;
+    private final String paymentStatus;
     private final BigDecimal currentLimit;
 }

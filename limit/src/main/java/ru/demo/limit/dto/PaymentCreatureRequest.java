@@ -1,4 +1,4 @@
-package ru.demo.limit.api;
+package ru.demo.limit.dto;
 
 import lombok.Data;
 

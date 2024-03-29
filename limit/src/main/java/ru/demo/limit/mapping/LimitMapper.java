@@ -2,7 +2,7 @@ package ru.demo.limit.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.demo.limit.api.LimitResponse;
+import ru.demo.limit.dto.LimitResponse;
 import ru.demo.limit.entity.LimitEntity;
 import ru.demo.limit.model.Limit;
 
