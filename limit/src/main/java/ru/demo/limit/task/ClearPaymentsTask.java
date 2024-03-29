@@ -35,12 +35,8 @@ public class ClearPaymentsTask {
 
     @Scheduled(cron = "${service.clear-payments.cron}")
     public void execute() {
-        log.debug("Запущен процесс удаления платежей...");
+        log.info("Запущен процесс удаления платежей...");
         paymentService.clearPayments();
-        logNextRun();
-    }
-
-    private void logNextRun() {
         log.info("Удаление платежей выполнено. Следующий запуск: {}", getNextRun());
     }
 
