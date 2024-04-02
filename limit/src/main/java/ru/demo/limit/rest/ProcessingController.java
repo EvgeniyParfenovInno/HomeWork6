@@ -28,13 +28,13 @@ public class ProcessingController {
         return service.createPayment(userId, request);
     }
 
-    @PatchMapping("/{paymentId}")
+    @PatchMapping("/{paymentId}/accept")
     public PaymentResponse acceptPayment(@RequestHeader Long userId, @PathVariable String paymentId) {
         log.info("Получен запрос на подтверждение платежа: {}", paymentId);
         return service.acceptPayment(userId, paymentId);
     }
 
-    @DeleteMapping("/{paymentId}")
+    @PatchMapping("/{paymentId}/cancel")
     public PaymentResponse cancelPayment(@RequestHeader Long userId, @PathVariable String paymentId) {
         log.info("Получен запрос на отмену платежа: {}", paymentId);
         return service.cancelPayment(userId, paymentId);

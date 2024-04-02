@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.demo.limit.dto.ApiErrorResponse;
+import ru.demo.limit.dto.MessageCode;
 import ru.demo.limit.exception.EntityNotExistsException;
 import ru.demo.limit.exception.OperationException;
 import ru.demo.limit.exception.ValidationException;
@@ -38,9 +39,9 @@ public class RestExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Throwable.class)
-    public ApiErrorResponse handleThrowable(Throwable t) {
-        log.error(ERROR_MESSAGE, t.getMessage());
-        return new ApiErrorResponse("900", t.getMessage());
+    @ExceptionHandler(Exception.class)
+    public ApiErrorResponse handleException(Exception e) {
+        log.error(ERROR_MESSAGE, e.getMessage());
+        return new ApiErrorResponse(MessageCode.COMMON_ERROR.name(), e.getMessage());
     }
 }

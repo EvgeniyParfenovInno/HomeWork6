@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class LimitServiceImpl implements LimitService {
 
     @Value("${service.limit}")
-    private Integer defaultLimit;
+    private BigDecimal defaultLimit;
 
     private final LimitRepository limitRepository;
     private final LimitMapper mapper = Mappers.getMapper(LimitMapper.class);
@@ -33,6 +33,6 @@ public class LimitServiceImpl implements LimitService {
     private LimitEntity createLimit(Long userId) {
         return limitRepository.save(new LimitEntity()
                 .setUserId(userId)
-                .setValue(new BigDecimal(defaultLimit)));
+                .setValue(defaultLimit));
     }
 }

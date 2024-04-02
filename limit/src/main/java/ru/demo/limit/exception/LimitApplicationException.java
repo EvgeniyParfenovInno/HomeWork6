@@ -2,12 +2,12 @@ package ru.demo.limit.exception;
 
 import lombok.Getter;
 
-public class ExtendedException extends RuntimeException {
+public class LimitApplicationException extends RuntimeException {
 
     @Getter
     private final String code;
 
-    public ExtendedException(String code, String message) {
+    public LimitApplicationException(String code, String message) {
         super(message);
         this.code = code;
     }

@@ -3,6 +3,7 @@ package ru.demo.limit.service.impl;
 import lombok.AllArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import ru.demo.limit.dto.MessageCode;
 import ru.demo.limit.entity.PaymentEntity;
 import ru.demo.limit.exception.EntityNotExistsException;
 import ru.demo.limit.exception.OperationException;
@@ -19,18 +20,19 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final PaymentRepository repository;
+    private final PaymentRepository paymentRepository;
     private final PaymentMapper mapper = Mappers.getMapper(PaymentMapper.class);
 
     @Override
     public Optional<Payment> getPayment(String paymentId) {
-        var entity = repository.findByPaymentId(paymentId).orElse(null);
+        var entity = paymentRepository.findByPaymentId(paymentId).orElse(null);
         return Optional.ofNullable(mapper.mapToModelFromEntity(entity));
     }
 
     @Override
     public BigDecimal getPaymentsSumByUserId(Long userId) {
-        return repository.findAllByUserId(userId).stream().
+        // Переделать на запрос к базе
+        return paymentRepository.findAllByUserId(userId).stream().
                 filter(payment -> PaymentStatus.CANCELLED != payment.getStatus())
                 .map(PaymentEntity::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -38,12 +40,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment createPayment(Payment payment) {
-        if (repository.findByPaymentId(payment.getPaymentId()).isPresent())
-            throw new OperationException("101", "Уже существует платеж с идентификатором: " + payment.getPaymentId());
+        if (paymentRepository.findByPaymentId(payment.getPaymentId()).isPresent())
+            throw new OperationException(MessageCode.PAYMENT_ALREADY_EXISTS.name(),
+                    "Уже существует платеж с идентификатором: " + payment.getPaymentId());
 
         var entity = mapper.mapToEntityFromModel(payment);
         entity.setStatus(PaymentStatus.NEW);
-        entity = repository.save(entity);
+        entity = paymentRepository.save(entity);
         return mapper.mapToModelFromEntity(entity);
     }
 
@@ -59,18 +62,21 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void clearPayments() {
-        repository.deleteAll();
+        // Переделать на запрос к базе
+        paymentRepository.deleteAll();
     }
 
     private Payment changePaymentStatus(String paymentId, PaymentStatus status) {
-        var entity = repository.findByPaymentId(paymentId)
-                .orElseThrow(() -> new EntityNotExistsException("102", "Не найден платеж с идентификатором: " + paymentId));
+        var entity = paymentRepository.findByPaymentId(paymentId)
+                .orElseThrow(() -> new EntityNotExistsException(MessageCode.PAYMENT_NOT_EXISTS.name(),
+                        "Не найден платеж с идентификатором: " + paymentId));
 
         if (entity.getStatus() != PaymentStatus.NEW)
-            throw new OperationException("103", "Не допустимо изменение статуса платежа с идентификатором: " + paymentId);
+            throw new OperationException(MessageCode.PAYMENT_TERMINATION_STATUS.name(),
+                    "Не допустимо изменение статуса платежа с идентификатором: " + paymentId);
 
         entity.setStatus(status);
-        entity = repository.save(entity);
+        entity = paymentRepository.save(entity);
         return mapper.mapToModelFromEntity(entity);
     }
 }
